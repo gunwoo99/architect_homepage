@@ -42,13 +42,18 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
   
-  // 스크롤 이벤트 처리
+  // 스크롤 이벤트 핸들러 수정
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      const scrollPosition = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      
+      setScrollY(scrollPosition);
+      setMainVisible(scrollPosition <= viewportHeight);
     };
-    
+
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // 초기 로드 시 실행
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -117,7 +122,40 @@ function App() {
     return 1 - (scrollY / fadeOutPoint);
   };
   
+  // 콘텐츠 래퍼의 opacity와 transform 계산 (Main Layer와 반대로)
+  const calculateContentStyle = () => {
+    // 화면 높이의 70%를 스크롤하면 나타나기 시작하도록 설정
+    const viewportHeight = window.innerHeight;
+    const startPoint = viewportHeight * 0.7; // 70vh에서 시작
+    const fadeInPoint = viewportHeight * 0.9; // 90vh에서 완전히 불투명해지도록
+    
+    if (scrollY < startPoint) {
+      return { 
+        opacity: 0, // 70vh 이전에는 완전히 투명
+        transform: 'translateY(50px) scale(0.95)'
+      };
+    }
+    
+    if (scrollY >= fadeInPoint) {
+      return { 
+        opacity: 1, // 90vh 이후에는 완전히 불투명
+        transform: 'translateY(0) scale(1)'
+      };
+    }
+    
+    // startPoint와 fadeInPoint 사이에서 점진적으로 변화
+    const progress = (scrollY - startPoint) / (fadeInPoint - startPoint);
+    const translateY = 50 - (progress * 50);
+    const scale = 0.95 + (progress * 0.05);
+    
+    return {
+      opacity: progress, // 70vh에서 90vh 사이에서 0에서 1로 점진적으로 변화
+      transform: `translateY(${translateY}px) scale(${scale})`
+    };
+  };
+  
   const mainOpacity = calculateMainOpacity();
+  const contentStyle = calculateContentStyle();
 
   // 슬라이드 순서 계산 (무한 회전을 위한 배열)
   const getSlideOrder = useCallback(() => {
@@ -130,12 +168,17 @@ function App() {
 
   const slideOrder = getSlideOrder();
 
+  // 텍스트 콘텐츠에도 opacity 적용
+  const mainContentOpacity = calculateMainOpacity();
+
   return (
     <div className="app">
       {/* 헤더 섹션 */}
       <header className="header">
         <div className="container">
-          <div className="logo">SF Architects</div>
+          <div className="logo">
+            S<span className="small-text">m</span>F<span className="small-text">ine</span> Architects
+          </div>
           <nav className="nav">
             <ul>
               <li><a href="#home" className="active">홈</a></li>
@@ -149,32 +192,49 @@ function App() {
         </div>
       </header>
 
-      {/* 히어로 섹션 (Main Layer) */}
-      <section 
+      {/* 히어로 배경 - 배경만 fade out */}
+      <div 
+        className={`hero-background ${mainVisible ? 'visible' : ''}`}
+        style={{ 
+          opacity: mainOpacity
+        }}
+      ></div>
+
+      {/* 히어로 내용 - 고정 위치, 스크롤에 따라 opacity 변화 */}
+      <div 
         id="home" 
-        className={`hero ${mainVisible ? 'visible' : ''}`}
+        className="hero-content-fixed"
         ref={mainRef}
         style={{ 
-          opacity: mainOpacity,
-          pointerEvents: mainOpacity < 0.1 ? 'none' : 'auto'
+          opacity: mainContentOpacity  // 텍스트 콘텐츠에도 opacity 적용
         }}
       >
         <div className="hero-content">
-          {/* <h1>SF Architects - 건축의 새로운 기준</h1>
-          <p>혁신적인 디자인과  가능한 건축 솔루션을 제공합니다</p> */}
           <h1>SF Architects - Architecture is</h1>
           <p>a collaboration with clients</p>
           <button className="btn">프로젝트 문의하기</button>
         </div>
-      </section>
+      </div>
 
-      {/* 콘텐츠 래퍼 - 스크롤에 따라 위치 조정 */}
-      <div className="content-wrapper" style={{ 
-        marginTop: `100vh`,
-        position: 'relative',
-        zIndex: 1
-      }}>
-        {/* Identity Layer 추가 */}
+      {/* 투명도를 조절할 수 있는 공간 */}
+      <div 
+        className="space-with-opacity"
+        style={{ 
+          opacity: 0,
+          height: '100vh'
+        }}
+      ></div>
+      
+      {/* 콘텐츠 래퍼 - 스크롤에 따라 opacity와 transform 조정 */}
+      <div 
+        className="content-wrapper"
+        style={{ 
+          opacity: contentStyle.opacity,
+          transform: contentStyle.transform
+        }}
+      >
+        
+        {/* Identity Layer */}
         <section id="identity" className="identity">
           <div className="container">
             <div className="identity-content">

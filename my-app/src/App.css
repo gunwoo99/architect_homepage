@@ -85,6 +85,14 @@ ul {
   font-weight: 700;
 }
 
+.logo .small-text {
+  font-size: 0.3em; /* 메인 글씨의 30% 크기 */
+  font-weight: 400; /* 더 가벼운 폰트 무게 */
+  vertical-align: baseline; /* 기준선에 맞춤 */
+  position: relative;
+  top: -0.2em; /* 약간 위로 올림 */
+}
+
 .nav ul {
   display: flex;
 }
@@ -122,34 +130,47 @@ ul {
   cursor: pointer;
 }
 
-/* 히어로 섹션 (Main Layer) */
-.hero {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #333;
-  color: white;
-  text-align: center;
-  padding: 0 20px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://via.placeholder.com/1920x1080');
-  background-size: cover;
-  background-position: center;
+/* 히어로 배경 - 배경만 fade out */
+.hero-background {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
+  height: 100vh;
+  background-color: #000;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://via.placeholder.com/1920x1080');
+  background-size: cover;
+  background-position: center;
   z-index: 0;
   opacity: 0;
-  transition: opacity 0.8s ease;
+  transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); /* 드라마틱한 전환 효과 */
 }
 
-.hero.visible {
+.hero-background.visible {
   opacity: 1;
+}
+
+/* 히어로 내용 - 고정 위치 */
+.hero-content-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  pointer-events: none; /* 클릭 이벤트가 배경으로 전달되도록 설정 */
+  transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); /* 배경과 동일한 전환 효과 */
 }
 
 .hero-content {
   max-width: 800px;
+  padding: 0 20px;
+  color: white;
+  text-align: center;
+  pointer-events: auto; /* 내용물은 클릭 가능하도록 설정 */
 }
 
 .hero-content h1 {
@@ -157,16 +178,35 @@ ul {
   margin-bottom: 1.5rem;
 }
 
+.hero-content h1 .small-text {
+  font-size: 0.4em; /* h1 글씨의 40% 크기 */
+  font-weight: 400;
+  vertical-align: baseline;
+  position: relative;
+  top: -0.2em;
+}
+
 .hero-content p {
   font-size: 1.5rem;
   margin-bottom: 2rem;
 }
 
-/* 콘텐츠 래퍼 */
+/* 콘텐츠 래퍼 수정 - 튀어오르는 효과 추가 */
 .content-wrapper {
-  background-color: #f8f8f8;
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  margin-top: 0; /* margin-top 제거 */
+  transition: 
+    opacity 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+    transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 튀어오르는 효과를 위한 cubic-bezier */
+  will-change: opacity, transform; /* 성능 최적화 */
+  transform-origin: center top; /* 변형의 기준점을 상단 중앙으로 설정 */
+}
+
+.space-with-opacity {
+  height: 100vh; /* 원하는 높이 */
+  background-color: #000; /* 원하는 배경색 */
+  transition: opacity 0.5s ease; /* 부드러운 전환 효과 */
 }
 
 /* Identity 섹션 추가 */
