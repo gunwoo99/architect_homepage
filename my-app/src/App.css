@@ -10,6 +10,7 @@ body {
   line-height: 1.6;
   color: #333;
   background-color: #f8f8f8;
+  overflow-x: hidden;
 }
 
 .container {
@@ -22,7 +23,7 @@ a {
   text-decoration: none;
   color: inherit;
 }
-
+ 
 ul {
   list-style: none;
 }
@@ -121,7 +122,7 @@ ul {
   cursor: pointer;
 }
 
-/* 히어로 섹션 */
+/* 히어로 섹션 (Main Layer) */
 .hero {
   height: 100vh;
   display: flex;
@@ -134,6 +135,17 @@ ul {
   background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://via.placeholder.com/1920x1080');
   background-size: cover;
   background-position: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.hero.visible {
+  opacity: 1;
 }
 
 .hero-content {
@@ -148,6 +160,232 @@ ul {
 .hero-content p {
   font-size: 1.5rem;
   margin-bottom: 2rem;
+}
+
+/* 콘텐츠 래퍼 */
+.content-wrapper {
+  background-color: #f8f8f8;
+  position: relative;
+  z-index: 1;
+}
+
+/* Identity 섹션 추가 */
+.identity {
+  padding: 5rem 0;
+  background-color: #f8f8f8;
+}
+
+.identity-content {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.identity-text {
+  flex: 1;
+}
+
+.identity-text h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.identity-text h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background-color: #333;
+}
+
+.identity-text p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.identity-stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: #666;
+}
+
+.identity-image {
+  flex: 1;
+}
+
+.image-container {
+  position: relative;
+  height: 400px;
+  background-image: url('https://via.placeholder.com/600x400/e0e0e0/333333?text=건축철학');
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0,0,0,0.3), transparent);
+}
+
+/* 슬라이드쇼 섹션 수정 - 너비 조정 */
+.slideshow {
+  position: relative;
+  padding: 5rem 0; /* Identity 레이어와 동일한 패딩 적용 */
+  background-color: #f0f0f0; /* 배경색 추가 (선택사항) */
+}
+
+.slideshow-container {
+  position: relative;
+  height: 600px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px; /* 모서리 둥글게 (선택사항) */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* 그림자 효과 (선택사항) */
+}
+
+.slides {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.slides.transitioning .slide {
+  transition: transform 0.5s ease-in-out;
+}
+
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+}
+
+.slide.active {
+  z-index: 2;
+}
+
+.slide-1 {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://via.placeholder.com/1920x1080/333333/ffffff?text=주거공간');
+}
+
+.slide-2 {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://via.placeholder.com/1920x1080/444444/ffffff?text=상업공간');
+}
+
+.slide-3 {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://via.placeholder.com/1920x1080/555555/ffffff?text=공공시설');
+}
+
+/* 슬라이드 내용 스타일 조정 */
+.slide-content {
+  position: absolute;
+  bottom: 100px;
+  left: 100px;
+  color: white;
+  max-width: 600px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5); /* 배경 추가로 가독성 향상 (선택사항) */
+  border-radius: 8px; /* 모서리 둥글게 (선택사항) */
+}
+
+.slide-content h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.slide-content p {
+  font-size: 1.5rem;
+}
+
+.slide-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.3s;
+}
+
+.slide-arrow:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.prev-arrow {
+  left: 20px;
+}
+
+.next-arrow {
+  right: 20px;
+}
+
+.slide-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 20;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.slide-dots.always-visible {
+  opacity: 1 !important;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.dot:hover {
+  transform: scale(1.2);
+}
+
+.dot.active {
+  background-color: white;
+  transform: scale(1.2);
 }
 
 /* 프로젝트 섹션 */
@@ -361,6 +599,29 @@ ul {
     opacity: 1;
     transform: none;
   }
+  
+  .identity-content {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .slideshow-container {
+    height: 500px;
+  }
+  
+  .slide-content {
+    left: 50px;
+    bottom: 50px;
+    max-width: 500px;
+  }
+  
+  .slide-content h2 {
+    font-size: 1.8rem;
+  }
+  
+  .slide-content p {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -406,6 +667,33 @@ ul {
   .project-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
+  
+  .identity-stats {
+    flex-wrap: wrap;
+  }
+  
+  .slideshow-container {
+    height: 400px;
+  }
+  
+  .slide-content {
+    left: 30px;
+    bottom: 30px;
+    max-width: 80%;
+  }
+  
+  .slide-content h2 {
+    font-size: 1.8rem;
+  }
+  
+  .slide-content p {
+    font-size: 1rem;
+  }
+  
+  .slide-arrow {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -419,5 +707,26 @@ ul {
   
   .office-section h3 {
     font-size: 1.5rem;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+  
+  .slideshow-container {
+    height: 350px;
+  }
+  
+  .slide-content {
+    left: 20px;
+    bottom: 20px;
+  }
+  
+  .slide-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .slide-content p {
+    font-size: 0.9rem;
   }
 }
